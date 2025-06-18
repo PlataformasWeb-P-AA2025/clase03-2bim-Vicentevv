@@ -89,3 +89,43 @@ def eliminar_estudiante(request, id):
     estudiante = Estudiante.objects.get(pk=id)
     estudiante.delete()
     return redirect(index)
+
+## ============================================================================== ##
+# Vista para listar los países
+def listar_paises(request):
+    paises = Pais.objects.all()
+    return render(request, 'listar_paises.html', {'paises': paises})
+
+# Vista para obtener un país específico
+def obtener_pais(request, id):
+    pais = Pais.objects.get(pk=id)
+    return render(request, 'obtener_pais.html', {'pais': pais})
+
+# Vista para crear un nuevo país
+def crear_pais(request):
+    if request.method == 'POST':
+        formulario = PaisForm(request.POST)
+        if formulario.is_valid():
+            formulario.save()
+            return redirect('listar_paises')
+    else:
+        formulario = PaisForm()
+    return render(request, 'crear_pais.html', {'formulario': formulario})
+
+# Vista para editar un país
+def editar_pais(request, id):
+    pais = Pais.objects.get(pk=id)
+    if request.method == 'POST':
+        formulario = PaisForm(request.POST, instance=pais)
+        if formulario.is_valid():
+            formulario.save()
+            return redirect('listar_paises')
+    else:
+        formulario = PaisForm(instance=pais)
+    return render(request, 'editar_pais.html', {'formulario': formulario})
+
+# Vista para eliminar un país
+def eliminar_pais(request, id):
+    pais = Pais.objects.get(pk=id)
+    pais.delete()
+    return redirect('listar_paises')

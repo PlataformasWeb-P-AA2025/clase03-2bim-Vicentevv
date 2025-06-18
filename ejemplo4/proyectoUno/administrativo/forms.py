@@ -8,5 +8,9 @@ class EstudianteForm(ModelForm):
         fields = ['nombre', 'apellido', 'cedula'] 
 
 
+class PaisForm(forms.ModelForm):
+    class Meta:
+        model = Pais
+        fields = ['nombre', 'capital', 'num_provincias', 'num_habitantes']
 
 
