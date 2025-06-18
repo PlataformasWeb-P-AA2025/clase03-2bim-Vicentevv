@@ -1,0 +1,16 @@
+<h3>Número de países: {{ numero_paises }}</h3>
+
+<ul>
+  {% for p in paises %}
+    <li>
+      {{ p }} - [<a href="{% url 'obtener_pais' p.id %}">ver</a>] - 
+      [<a href="{% url 'editar_pais' p.id %}">editar</a>] -
+      [<a href="{% url 'eliminar_pais' p.id %}" 
+          onclick="return confirm('¿Está seguro de la eliminación?')">
+          eliminar</a>]
+    </li>
+  {% endfor %}
+</ul>
+
+<br />
+[<a href="{% url 'crear_pais' %}">agregar país</a>]
