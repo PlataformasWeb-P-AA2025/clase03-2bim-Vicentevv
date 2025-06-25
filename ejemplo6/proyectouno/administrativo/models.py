@@ -56,12 +56,10 @@ class Costo(models.Model):
 
 
 class Matricula(models.Model):
-    estudiante = models.ForeignKey(Estudiante, related_name='lasmatriculas', 
-        on_delete=models.CASCADE)
-    modulo = models.ForeignKey(Modulo, related_name='lasmatriculas', 
-        on_delete=models.CASCADE)
+    estudiante = models.ForeignKey(Estudiante, related_name='lasmatriculas', on_delete=models.CASCADE)
+    modulo = models.ForeignKey(Modulo, related_name='lasmatriculas', on_delete=models.CASCADE)
     comentario = models.CharField(max_length=200)
-    costo = models.OneToOneField('Costo', on_delete=models.CASCADE, null=True, blank=True, related_name='matricula_asociada')
+    costo = models.DecimalField(max_digits=10, decimal_places=2)  # Campo para almacenar el costo de la matrícula
 
     def __str__(self):
-        return "Matricula: Estudiante(%s) - Modulo(%s)" % (self.estudiante, self.modulo.nombre)
+        return f"Matricula: Estudiante({self.estudiante.nombre}) - Modulo({self.modulo.nombre})"

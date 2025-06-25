@@ -3,27 +3,40 @@ from django.http import HttpResponse
 from django.template import RequestContext
 from django.shortcuts import render
 
-# importar las clases de models.py
-from administrativo.models import Matricula, Estudiante
+# Importar las clases de models.py
+from administrativo.models import Matricula, Estudiante, Modulo
 from administrativo.forms import MatriculaForm, MatriculaEditForm
 
-# vista que permita presesentar las matriculas
-# el nombre de la vista es index.
+# Vista que permita presentar las matriculas
+# El nombre de la vista es index.
 
 def index(request):
     """
+    Vista para listar las matrículas de los estudiantes.
     """
     matriculas = Matricula.objects.all()
+    estudiantes = Estudiante.objects.all()  # Obtener todos los estudiantes
 
     titulo = "Listado de matriculas"
-    informacion_template = {'matriculas': matriculas,
-    'numero_matriculas': len(matriculas), 'mititulo': titulo}
+    for estudiante in estudiantes:
+        total_costo = 0
+        for matricula in estudiante.lasmatriculas.all():
+            total_costo += matricula.costo  # Sumar el costo de cada matrícula
+        estudiante.total_costo = total_costo  # Asignar el costo total al estudiante
+
+    informacion_template = {
+        'matriculas': matriculas,
+        'numero_matriculas': len(matriculas),
+        'mititulo': titulo,
+        'estudiantes': estudiantes  # Pasar los estudiantes con su costo total
+    }
+
     return render(request, 'index.html', informacion_template)
+
 
 
 def detalle_matricula(request, id):
     """
-
     """
 
     matricula = Matricula.objects.get(pk=id)
@@ -34,28 +47,32 @@ def detalle_matricula(request, id):
 def crear_matricula(request):
     """
     """
-    if request.method=='POST':
+    estudiantes = Estudiante.objects.all()  # Obtener todos los estudiantes
+    modulos = Modulo.objects.all()  # Obtener todos los módulos
+
+    if request.method == 'POST':
         formulario = MatriculaForm(request.POST)
-        print(formulario.errors)
         if formulario.is_valid():
-            formulario.save() # se guarda en la base de datos
+            formulario.save()  # Se guarda en la base de datos
             return redirect(index)
     else:
         formulario = MatriculaForm()
-    diccionario = {'formulario': formulario}
+
+    diccionario = {
+        'formulario': formulario,
+        'estudiantes': estudiantes,
+        'modulos': modulos
+    }
 
     return render(request, 'crear_matricula.html', diccionario)
+
 
 def editar_matricula(request, id):
     """
     """
     matricula = Matricula.objects.get(pk=id)
-    print("----------matricula")
-    print(matricula)
-    print("----------matricula")
-    if request.method=='POST':
+    if request.method == 'POST':
         formulario = MatriculaEditForm(request.POST, instance=matricula)
-        print(formulario.errors)
         if formulario.is_valid():
             formulario.save()
             return redirect(index)
@@ -65,9 +82,9 @@ def editar_matricula(request, id):
 
     return render(request, 'crear_matricula.html', diccionario)
 
+
 def detalle_estudiante(request, id):
     """
-
     """
 
     estudiante = Estudiante.objects.get(pk=id)

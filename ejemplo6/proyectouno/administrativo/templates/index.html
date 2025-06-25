@@ -34,39 +34,30 @@
 
 
 
-<h3>Número de Matriculas {{ numero_matriculas }}</h3>
-<hr>
-[<a href="{% url 'crear_matricula' %}">nuevo</a>]
-<hr>
-<table border="1px">
-  <tr>
-    <th><b>Nombre</b></th>
-    <th><b>Apellido</b></th>
-    <th><b>Tipo</b></th>
-    <th><b>Edad</b></th>
-    <th><b>Matriculas</b></th>
-  </tr>
-  {% for e in matriculas %}
-  <tr>
-    <td>
-      {{e.nombre}}
-    </td>
-    <td>
-      {{e.apellido}}
-    </td>
-    <td>
-      {{e.tipo_estudiante}}
-    </td>
-    <td>
-      {{e.edad}}
-    </td>
-    <td>
-      {% for m in e.matriculas.all %}
-        {{m.modulo.nombre}} - Costo: {{m.costo.costo}}<br>
-      {% empty %}
-        No tiene matrículas
-      {% endfor %}
-    </td>
-  </tr>
-  {% endfor %}
+<h3>Lista Estudiantes</h3>
+<table border="1">
+    <tr>
+        <th>Nombre</th>
+        <th>Apellido</th>
+        <th>Tipo</th>
+        <th>Edad</th>
+        <th>Matriculas</th>
+    </tr>
+    {% for estudiante in estudiantes %}
+    <tr>
+        <td>{{ estudiante.nombre }}</td>
+        <td>{{ estudiante.apellido }}</td>
+        <td>{{ estudiante.tipo_estudiante }}</td>
+        <td>{{ estudiante.edad }}</td>
+        <td>
+            {% for matricula in estudiante.lasmatriculas.all %}
+                Modulo: {{ matricula.modulo.nombre }} - Costo: {{ matricula.costo }}<br>
+            {% empty %}
+                No tiene matrículas
+            {% endfor %}
+            <br>
+            Costo Total: {{ estudiante.total_costo }}
+        </td>
+    </tr>
+    {% endfor %}
 </table>
