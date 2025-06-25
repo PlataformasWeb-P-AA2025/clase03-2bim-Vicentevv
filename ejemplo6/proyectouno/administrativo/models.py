@@ -47,16 +47,21 @@ class Modulo(models.Model):
     def __str__(self):
         return "Módulo: %s" % (self.nombre)
 
-
-class Matricula(models.Model):
-    """
-    """
-    estudiante = models.ForeignKey(Estudiante, related_name='lasmatriculas',
-            on_delete=models.CASCADE)
-    modulo = models.ForeignKey(Modulo, related_name='lasmatriculas',
-            on_delete=models.CASCADE)
-    comentario = models.CharField(max_length=200)
+class Costo(models.Model):
+    matricula = models.OneToOneField('Matricula', on_delete=models.CASCADE, related_name='costo_asociado')
+    costo = models.DecimalField(max_digits=10, decimal_places=2)
 
     def __str__(self):
-        return "Matricula: Estudiante(%s) - Modulo(%s)" % \
-                (self.estudiante, self.modulo.nombre)
+        return f"Costo de matrícula para {self.matricula.estudiante.nombre} en {self.matricula.modulo.nombre}: {self.costo}"
+
+
+class Matricula(models.Model):
+    estudiante = models.ForeignKey(Estudiante, related_name='lasmatriculas', 
+        on_delete=models.CASCADE)
+    modulo = models.ForeignKey(Modulo, related_name='lasmatriculas', 
+        on_delete=models.CASCADE)
+    comentario = models.CharField(max_length=200)
+    costo = models.OneToOneField('Costo', on_delete=models.CASCADE, null=True, blank=True, related_name='matricula_asociada')
+
+    def __str__(self):
+        return "Matricula: Estudiante(%s) - Modulo(%s)" % (self.estudiante, self.modulo.nombre)
