@@ -32,7 +32,7 @@ def index(request):
     }
 
     return render(request, 'index.html', informacion_template)
-
+    
 
 
 def detalle_matricula(request, id):
